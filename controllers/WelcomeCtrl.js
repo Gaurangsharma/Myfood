@@ -21,27 +21,27 @@ module.exports = {
         var msg;
         try {
             if (signuptype == 0) {
-                var name = this.request.body.fields.name;
-                var email = this.request.body.fields.email;
-                var pwd = this.request.body.fields.pwd;
+                var name = this.request.body.fields.name[0];
+                var email = this.request.body.fields.email[0];
+                var pwd = this.request.body.fields.pwd[0];
                 console.log(name, email, pwd);
                 var res = yield databaseUtils.executeQuery(util.format('insert into admintable (name,email,pwd) values("%s","%s","%s")', name, email, pwd));
             } else if (signuptype == 1) {
-                var name = this.request.body.fields.name;
-                var email = this.request.body.fields.email;
-                var pwd = this.request.body.fields.pwd;
+                var name = this.request.body.fields.name[0];
+                var email = this.request.body.fields.email[0];
+                var pwd = this.request.body.fields.pwd[0];
                 console.log(name, email, pwd);
                 var res = yield databaseUtils.executeQuery(util.format('insert into customer (name,email,pwd) values("%s","%s","%s")', name, email, pwd));
             } else if (signuptype == 2) {
                 var name = this.request.body.fields.name[0];
                 var email = this.request.body.fields.email[0];
-                var pwd = this.request.body.fields.pwd;
+                var pwd = this.request.body.fields.pwd[0];
 
                 var name = this.request.body.fields.name[1];
                 var email = this.request.body.fields.email[1];
                 var pic = this.request.body.files.pic[1].path.split('\\')[3];
                 var address = this.request.body.fields.address;
-                var phone = this.request.body.fields.phone;
+                var phone = this.request.body.fields.phone[0];
                 var license = this.request.body.fields.license;
                 var openingtime = this.request.body.fields.openingtime;
                 var closingtime = this.request.body.fields.closingtime;
@@ -55,9 +55,9 @@ module.exports = {
                 res = yield databaseUtils.executeQuery(util.format('insert into user(name,email,pwd,rid) values("%s","%s","%s","%s")', name, email, pwd, res.insertId));
 
             } else if (signuptype == 3) {
-                var name = this.request.body.fields.name;
-                var pwd = this.request.body.fields.pwd;
-                var phone = this.request.body.fields.phone;
+                var name = this.request.body.fields.name[2];
+                var pwd = this.request.body.fields.pwd[1];
+                var phone = this.request.body.fields.phone[1];
                 var ahdaar = this.request.body.fields.adhaar;
                 var pic = this.request.body.files.pic[0].path.split('\\')[3];
                 console.log(name,pwd,phone,ahdaar,pic);
