@@ -9,7 +9,14 @@ module.exports = function(app){
     var welcomeCtrl = require('./../controllers/WelcomeCtrl');
     router.get('/', welcomeCtrl.showHomePage);
     router.get('/signup', welcomeCtrl.showSignUpPage);
+    router.get('/login', welcomeCtrl.showLoginPage);
+    router.get('/dashboard', welcomeCtrl.showDashbaord);
+    router.get('/logout', welcomeCtrl.logout);
+
+
+
     router.post('/signup', welcomeCtrl.signUp);
+    router.post('/login', welcomeCtrl.login);
 
     return router.middleware();
 }
