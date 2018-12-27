@@ -63,7 +63,10 @@ app.use(function* (next) {
     }
 });
 
+app.use(mount('/', require('./routes/Routes')(app)));
 app.use(mount('/app', require('./routes/appRoutes')(app)));
+app.use(mount('/api', require('./routes/apiRoutes')(app)));
+
 
 var serve = require('koa-static');
 app.use(serve('static'));
