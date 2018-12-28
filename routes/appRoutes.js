@@ -10,6 +10,8 @@ module.exports = function(app){
     var restaurantCtrl = require('./../controllers/restaurantCtrl');
     router.get('/home', welcomeCtrl.showHomePage);
     router.post('/addnewitem',restaurantCtrl.addnewitem);
+    router.post('/addrider',restaurantCtrl.addrider);
+    router.post('/getriders',restaurantCtrl.getriders);
 
     return router.middleware();
 }
