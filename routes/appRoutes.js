@@ -7,7 +7,9 @@ module.exports = function(app){
 
     //Welcome Routes
     var welcomeCtrl = require('./../controllers/WelcomeCtrl');
+    var restaurantCtrl = require('./../controllers/restaurantCtrl');
     router.get('/home', welcomeCtrl.showHomePage);
+    router.post('/addnewitem',restaurantCtrl.addnewitem);
 
     return router.middleware();
 }
