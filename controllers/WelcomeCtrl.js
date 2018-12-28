@@ -102,7 +102,7 @@ module.exports = {
         if (res.length>0){
             // login admin
             var user = {
-                user:res,
+                user:res[0],
                 role:'admin'
             }
             sessionUtils.saveUserInSession(user,this.cookies);
@@ -112,7 +112,7 @@ module.exports = {
             if (res.length>0){
                 // login customer
                 var user = {
-                    user:res,
+                    user:res[0],
                     role:'customer'
                 }
                 sessionUtils.saveUserInSession(user,this.cookies);
@@ -122,7 +122,7 @@ module.exports = {
                 if (res.length>0){
                     // login rider
                     var user = {
-                        user:res,
+                        user:res[0],
                         role:'rider'
                     }
                     sessionUtils.saveUserInSession(user,this.cookies);
@@ -135,7 +135,7 @@ module.exports = {
                         if (rest.length>1){
                             // manage multiple restaurant
                             var user = {
-                                user:res,
+                                user:res[0],
                                 role:'mulrest',
                                 rest:rest
                             }
@@ -144,9 +144,9 @@ module.exports = {
                         } else {
                             // save user in session
                             var user = {
-                                user:res,
+                                user:res[0],
                                 role:'restaurant',
-                                rest:rest
+                                rest:rest[0]
                             }
                             sessionUtils.saveUserInSession(user,this.cookies);
                             this.redirect('/dashboard');
@@ -163,6 +163,6 @@ module.exports = {
         }
     },
     showDashbaord:function *(next) {
-        yield this.render('index',{});
+        yield this.render('dashboard',{});
     }
 }
