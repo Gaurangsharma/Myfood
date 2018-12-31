@@ -119,7 +119,7 @@
                     <h3 class="register-heading">Login</h3>
                     <div class="row register-form">
                         <% try{ if(msg) { %>
-                        <h4>Wrong E-mail or Password</h4>
+                        <h4><%= msg %></h4>
                         <% } }catch(e){} %>
 
                         <form class="form-control" method="post" action="/login">

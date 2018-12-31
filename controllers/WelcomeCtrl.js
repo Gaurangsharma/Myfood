@@ -18,7 +18,7 @@ module.exports = {
         this.redirect('/');
     },
     showSignUpPage:function *(next) {
-        yield this.render('home',{
+        yield this.render('signup',{
 
         });
     },
@@ -55,21 +55,21 @@ module.exports = {
                 var openingtime = this.request.body.fields.openingtime;
                 var closingtime = this.request.body.fields.closingtime;
                 var openingdays = this.request.body.fields.openingday;
+                var lat = this.request.body.fields.lat;
+                var lon = this.request.body.fields.lon;
+
 
                 console.log(name, email, pic, address, phone, openingtime, closingtime, openingdays, license);
 
 
-                var rest_id = yield databaseUtils.executeQuery(util.format('insert into restaurant(name,email,pic,address,phone,openingtime,closingtime,openingdays,license) values("%s","%s","%s","%s","%s","%s","%s","%s","%s")', name, email, pic, address, phone, openingtime, closingtime, openingdays, license));
+                var rest_id = yield databaseUtils.executeQuery(util.format('insert into restaurant(name,email,pic,address,phone,openingtime,closingtime,openingdays,license,lat,lon) values("%s","%s","%s","%s","%s","%s","%s","%s","%s",%s,%s)', name, email, pic, address, phone, openingtime, closingtime, openingdays, license, lat, lon));
                 console.log(name, email, pwd, rest_id.insertId);
-                var user_id = yield databaseUtils.executeQuery(util.format('insert into user(name,email,pwd) values("%s","%s","%s")', name, email, pwd));
-                console.log( user_id.insertId);
-                res = yield databaseUtils.executeQuery(util.format('insert into user_rest(user_id,rest_id) values("%s","%s")',user_id.insertId,rest_id.insertId));
-
+                var user_id = yield databaseUtils.executeQuery(util.format('insert into user(name,email,pwd,rest_id) values("%s","%s","%s","%s")', name, email, pwd,rest_id.insertId));
 
             } else if (signuptype == 3) {
-                var name = this.request.body.fields.name[2];
-                var pwd = this.request.body.fields.pwd[1];
-                var phone = this.request.body.fields.phone[1];
+                var name = this.request.body.fields.name[0];
+                var pwd = this.request.body.fields.pwd;
+                var phone = this.request.body.fields.phone[0];
                 var ahdaar = this.request.body.fields.adhaar;
                 var pic = this.request.body.files.pic[0].path.split('\\')[3];
                 console.log(name,pwd,phone,ahdaar,pic);
@@ -82,12 +82,12 @@ module.exports = {
         }
 
         if (msg){
-            yield this.render('home',{
+            yield this.render('login',{
                 msg:msg,
             });
         } else {
-            yield this.render('home',{
-                msg:'Error...!!!',
+            yield this.render('signup',{
+                msg:'Mandatory Fields Are InComplete !!',
             });
         }
     },
@@ -98,6 +98,9 @@ module.exports = {
         var email = this.request.body.email;
         var pwd= this.request.body.pwd;
         var res;
+
+
+
         res = yield databaseUtils.executeQuery(util.format('select * from admintable where email="%s" and pwd="%s"',email,pwd));
         if (res.length>0){
             // login admin
@@ -131,18 +134,7 @@ module.exports = {
                 else {
                     res = yield databaseUtils.executeQuery(util.format('select * from user where email="%s" and pwd="%s"',email,pwd));
                     if (res.length>0){
-                        var rest = yield databaseUtils.executeQuery(util.format('select * from user u left join user_rest ur on u.id = ur.user_id left join restaurant r on ur.rest_id=r.id where u.email="%s" and pwd="%s"',email,pwd));
-                        if (rest.length>1){
-                            // manage multiple restaurant
-                            var user = {
-                                user:res[0],
-                                role:'mulrest',
-                                rest:rest
-                            }
-                            sessionUtils.saveUserInSession(user,this.cookies);
-                            this.redirect('/predashboard');
-                        } else {
-                            // save user in session
+                        var rest = yield databaseUtils.executeQuery(util.format('select * from restaurant where id="%s"',res[0].rest_id));
                             var user = {
                                 user:res[0],
                                 role:'restaurant',
@@ -150,19 +142,39 @@ module.exports = {
                             }
                             sessionUtils.saveUserInSession(user,this.cookies);
                             this.redirect('/dashboard');
-
-                        }
-                    } else {
-                        // redirect no such email or password
+                    }
+                    else{
                         yield this.render('login',{
-                            msg:'error'
+                            msg:'Wrong E-mail Id OR Password'
                         });
                     }
                 }
             }
         }
+        yield this.render('login',{
+            msg:'Wrong E-mail Id OR Password'
+        });
     },
-    showDashbaord:function *(next) {
-        yield this.render('dashboard',{});
+    showDashbaord : function *(next) {
+        console.log(this.currentUser);
+        if (this.currentUser){
+            var role = this.currentUser.role;
+            console.log(role,'role');
+
+
+            if (role == 'admin'){
+                yield this.render('admindash');
+            }
+            else if (role == 'restaurant'){
+                yield this.render('restaurantdash');
+            } else if (role == 'rider'){
+                yield this.render('riderdash');
+            } else {
+                yield this.render('customerdash');
+            }
+        } else{
+            console.log(this.currentUser);
+            this.redirect('/');
+        }
     }
 }
