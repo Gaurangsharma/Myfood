@@ -15,5 +15,19 @@ module.exports = {
         this.cookies.set("SESSION_ID", '', {expires: new Date(1), path: '/'});
 
         this.redirect('/');
+    },
+    checkout : function *(next) {;
+        var kart = this.cookies.get("kart");
+        kart = JSON.parse(kart);
+        console.log(kart);
+
+
+        yield this.render('checkout',{
+            kart:kart
+        });
+    },
+    checkout2:function *(next) {
+
     }
+
 }

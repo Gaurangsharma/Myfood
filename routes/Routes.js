@@ -10,7 +10,7 @@ module.exports = function(app){
     var adminCtrl = require('./../controllers/adminCtrl');
     var restaurantCtrl = require('./../controllers/restaurantCtrl');
     var riderCtrl = require('./../controllers/riderCtrl');
-    var userCtrl = require('./../controllers/userCtrl');
+    var customerCtrl = require('./../controllers/customerCtrl');
 
 
     router.get('/', welcomeCtrl.showHomePage);
@@ -23,9 +23,12 @@ module.exports = function(app){
 
     router.post('/signup', welcomeCtrl.signUp);
     router.post('/login', welcomeCtrl.login);
+    router.post('/openpayment',customerCtrl.checkout2);
 
     router.get('/restaurant/:rid',adminCtrl.showRestaurant);
     router.get('/items/:iid',adminCtrl.showItems);
+    router.get('/checkout',customerCtrl.checkout);
+
 
 
     return router.middleware();
