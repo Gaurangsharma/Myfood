@@ -19,6 +19,7 @@ module.exports = function(app){
     router.get('/dashboard', welcomeCtrl.showDashbaord);
     router.get('/logout', welcomeCtrl.logout);
     router.get('/listrestaurants',adminCtrl.listrestaurants);
+    router.get('/myorders',customerCtrl.showOrderPage);
 
 
     router.post('/signup', welcomeCtrl.signUp);
@@ -27,6 +28,9 @@ module.exports = function(app){
     router.post('/getpromocodedetails',customerCtrl.getpromocodedetails);
     router.post('/checkout',customerCtrl.checkout2);
     router.post('/getdeliverycharge',customerCtrl.getdeliverycharge);
+    router.post('/setrider',adminCtrl.setrider);
+    router.post('/takeorder',adminCtrl.takeorder);
+    router.post('/deliver',adminCtrl.deliver);
 
 
 

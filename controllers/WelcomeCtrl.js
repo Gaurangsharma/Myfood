@@ -168,7 +168,7 @@ module.exports = {
             else if (role == 'restaurant'){
                 yield this.render('restaurantdash');
             } else if (role == 'rider'){
-                yield this.render('riderdash');
+                this.redirect('/myorders');
             } else {
                 yield this.render('customerdash');
             }

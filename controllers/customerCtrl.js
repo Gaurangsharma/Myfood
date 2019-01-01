@@ -46,8 +46,8 @@ module.exports = {
         var tcost = this.request.body.tcost;
         var restid = this.request.body.restid;
 
-        var order = yield databaseUtils.executeQuery(util.format('insert into myorder(customerid,restid,location,promocodeid,deliverytype,status,amount,paymentmode,lat,lon,dcharge) values("%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s")\
-        ',cid,restid,address,promocodeid,delivery,0,tcost,payment,lat,lon,dcost));
+        var order = yield databaseUtils.executeQuery(util.format('insert into myorder(customerid,restid,location,promocodeid,deliverytype,status,amount,paymentmode,lat,lon,dcharge,otpid) values("%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s")\
+        ',cid,restid,address,promocodeid,delivery,0,tcost,payment,lat,lon,dcost,1));
 
         var orderid = order.insertId;
         for(var i=0;i<numberofitems;++i){
@@ -92,6 +92,23 @@ module.exports = {
             this.body={flag:true,val:(distance.distance*multiplier)}
         } else {
             this.body={flag:false}
+        }
+    },
+    showOrderPage : function *(next) {
+        if (this.currentUser.role == 'admin' || this.currentUser.role == 'rider'){
+            var res = yield databaseUtils.executeQuery(util.format('select myorder.*,rider.name as rname,rider.phone as rphone,rider.id as rid from myorder left join riderorder on myorder.id=riderorder.orderid left join rider on riderorder.riderid=rider.id order by myorder.status'));
+            console.log(res);
+            var rider = yield databaseUtils.executeQuery(util.format('select * from rider'));
+
+            yield this.render('order', {
+                order: res,
+                rider:rider,
+            });
+        } else {
+            var res = yield databaseUtils.executeQuery(util.format('select * from myorder where customerid="%s" order by status', this.currentUser.user.id));
+            yield this.render('order', {
+                order: res,
+            });
         }
     }
 

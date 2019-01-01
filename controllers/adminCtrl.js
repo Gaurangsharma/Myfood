@@ -50,5 +50,26 @@ module.exports = {
                 items: res
             });
         }
+    },
+    setrider : function *(next) {
+        var oid = this.request.body.oid;
+        var rid = this.request.body.rid;
+        var res = yield databaseUtils.executeQuery(util.format('update myorder set status=2 where id="%s"',oid));
+        res = yield databaseUtils.executeQuery(util.format('insert into riderorder (orderid,riderid) values("%s","%s")',oid,rid));
+
+
+        this.redirect('/myorders');
+    },
+    takeorder: function *(next) {
+        var oid = this.request.body.oid;
+        var res = yield databaseUtils.executeQuery(util.format('update myorder set status=3 where id="%s"',oid));
+        this.redirect('/myorders');
+    },
+    deliver: function *(next) {
+        var otp = this.request.body.otp;
+        var res = yield databaseUtils.executeQuery(util.format('update myorder m,otp o set m.status=4 where m.otpid=o.id and o.code="%s"',otp));
+        console.log(otp,res);
+        
+        this.redirect('/myorders');
     }
 }
