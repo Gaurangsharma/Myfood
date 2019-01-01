@@ -21,7 +21,7 @@ function reverseGeocode(platform,place) {
 
   geocoder.reverseGeocode(
     reverseGeocodingParameters,
-    onSuccess,
+    onSuccess2,
     onError
   );
 }
@@ -32,7 +32,7 @@ function reverseGeocode(platform,place) {
  *
  * see: http://developer.here.com/rest-apis/documentation/geocoder/topics/resource-type-response-geocode.html
  */
-function onSuccess(result) {
+function onSuccess2(result) {
   var locations = result.response.view[0].result;
  /*
   * The styling of the geocoding response on the map is entirely under the developer's control.
@@ -40,7 +40,7 @@ function onSuccess(result) {
   * in the functions below:
   */
  // addLocationsToMap(locations);
-  addLocationsToPanel(locations);
+  addLocationsToPanel2(locations);
   // ... etc.
 }
 
@@ -111,7 +111,7 @@ var locationsContainer = document.getElementById('panel');
  * @param {Object[]} locations An array of locations as received from the
  *                             H.service.GeocodingService
  */
-function addLocationsToPanel(locations){
+function addLocationsToPanel2(locations){
 
 
   //

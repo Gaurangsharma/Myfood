@@ -420,6 +420,8 @@
             </div>
             <!-- /.col-lg-12 -->
         </div>
+
+
         <!-- /.row -->
         <div class="row">
             <div class="col-lg-12">
@@ -429,18 +431,21 @@
                     </div>
                     <div class="panel-body">
                         <div class="row">
-                            <form method="post" action="/openpayment">
+                            <form method="post" action="/openpayment" id="checkoutform">
                             <div class="col-lg-7">
                                 <div class="form-group">
+
+                                    <input type="hidden" id="restid" name="restid" value="<%= restid %>">
+
                                     <label>Choose Order Type</label>
                                     <div class="radio">
                                         <label>
-                                            <input type="radio" name="delivery" class="delivery" id="delivery1" value="option1" checked>Home Delivery
+                                            <input type="radio" name="delivery" class="delivery" id="delivery1" value="1" checked>Home Delivery
                                         </label>
                                     </div>
                                     <div class="radio">
                                         <label>
-                                            <input type="radio" name="delivery" class="delivery" id="delivery2" value="option2">Pickup
+                                            <input type="radio" name="delivery" class="delivery" id="delivery2" value="2">Pickup
                                         </label>
                                     </div>
                                 </div>
@@ -451,14 +456,14 @@
                                     </div>
                                     <div class="form-group addressgroup">
                                         <label>Address</label>
-                                        <input class="form-control" id="address" onblur="filladdress();" name="address" placeholder="Enter Address">
+                                        <input class="form-control" id="address"  name="address" placeholder="Enter Address">
                                         <input type="hidden" name="lat" id="lat">
                                         <input type="hidden" name="lon" id="lon">
                                     </div>
                                     <div class="form-group addressgroup">
                                         <div class="checkbox">
                                             <label>
-                                                <input type="checkbox" onclick="getGeoLocation()" value="">Use Cuurent Location
+                                                <input type="checkbox" onclick="getGeoLocation()" value="">Use Current Location
                                             </label>
                                         </div>
                                     </div>
@@ -467,17 +472,17 @@
                                         <label>Choose Payment Option</label>
                                         <div class="radio">
                                             <label>
-                                                <input type="radio" name="payment" id="optionsRadios1" value="option1" checked>Paytm
+                                                <input type="radio" name="payment" id="optionsRadios1" value="1" checked>Paytm
                                             </label>
                                         </div>
                                         <div class="radio">
                                             <label>
-                                                <input type="radio" name="payment" id="optionsRadios2" value="option2">Debit/Credit Card
+                                                <input type="radio" name="payment" id="optionsRadios2" value="2">Debit/Credit Card
                                             </label>
                                         </div>
                                         <div class="radio">
                                             <label>
-                                                <input type="radio" name="payment" id="optionsRadios3" value="option3">Cash On Delivery
+                                                <input type="radio" name="payment" id="optionsRadios3" value="3">Cash On Delivery
                                             </label>
                                         </div>
                                     </div>
@@ -496,11 +501,11 @@
                                             <% for(i in kart){ %>
                                             <a href="#" class="list-group-item addqty" title="Click To Add Quantity">
                                                 <i class="fa fa-shopping-basket fa-fw"></i> <%= kart[i].itemname %>
-                                                <input type="hidden" name="<%= 'itemid'+i %>">
+                                                <input type="hidden" name="<%= 'itemid'+i %>" value="<%= kart[i].itemid %>">
                                                 &nbsp;&nbsp;&nbsp;
                                                 <i class="fa fa-times"></i>
                                                 <span class="qty">1</span>
-                                                    <input type="hidden" name="<%= 'qty'+i %>" class="qty">
+                                                    <input type="hidden" name="<%= 'qty'+i %>" class="qty" value="1">
                                                 <input type="hidden" class="mycost" value="<%= kart[i].cost %>">
                                                 <span class="pull-right text-muted"><em>
                                                     <i class="fa fa-rupee"></i>
@@ -513,18 +518,50 @@
                                             <% } %>
 
 
+                                            <a href="#" class="list-group-item promocodediv">
+                                                <input type="hidden" name="promocodeid" id="promocodeid" value="undefined">
+                                                <i class="fa fa-gift fa-fw"></i> Promocode Disc
+                                                <span class="pull-right text-muted">
+                                                    <i class="fa fa-minus" style="color: green;"></i>
+                                                    &nbsp;&nbsp;
+                                                    <em>
+                                                    <i class="fa fa-rupee" style="color: green;"></i>
+
+                                                <span class="promocdeamt" style="color: green;"></span>
+
+
+                                                </em>
+                                    </span>
+                                            </a>
+
+                                            <a href="#" class="list-group-item deliverydiv">
+                                                <input type="hidden" name="dcost" id="deliveryamt" value="0">
+
+                                                <i class="fa fa-bicycle fa-fw"></i> Delivery Charge
+                                                <span class="pull-right text-muted">
+                                                    <i class="fa fa-plus" style="color: red;"></i>
+                                                    <em>
+                                                    <i class="fa fa-rupee" style="color: red;"></i>
+
+                                                <span class="deliveryamt" style="color: red;"></span>
+
+
+                                                </em>
+                                    </span>
+                                            </a>
+
                                         </div>
 
                                         <div class="form-group">
                                             <input type="text" id="promocodename" placeholder="PROMOCODE" class="form-control promocode" style="width: 59%;display: inline;">
                                             <button type="button" id="promocodebtn" class="btn btn-default promocode" style="width: 39%;display: inline">REDEEM</button>
-                                            <input type="hidden" id="promocodeid" value="undefined">
+
                                         </div>
                                         <!-- /.list-group -->
                                         <label class="form-control" id="total">
-
                                         </label>
-                                        <a href="#" class="btn btn-default btn-block">Proceed To Payment</a>
+                                        <input type="hidden" name="tcost" id="tcost" value="0">
+                                        <button onclick=" $('#checkoutform').submit(); " class="btn btn-default btn-block">Proceed To Payment</button>
                                     </div>
                                     <!-- /.panel-body -->
                                 </div>
@@ -588,18 +625,10 @@
 
 <script>
 
+var c;
+var promocode;
 
 
-    function filladdress() {
-        var address = $('#address').val();
-        if (address.split(" ").length<=3){
-            allow=0;
-            alert('Give Your Full Location Address');
-        } else {
-            show(address);
-            allow=1;
-        }
-    }
     function getGeoLocation() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(showPosition);
@@ -613,6 +642,19 @@
     }
 
     $(document).ready(function () {
+        $('#address').focusout(function () {
+           filladdress();
+        });
+        $('#address').keyup(function (e) {
+            var code = e.keyCode || e.which;
+            if (code==9)
+            filladdress();
+        });
+
+
+
+        $('.promocodediv').css({"display":"none"});
+        $('.deliverydiv').css({"display":"none"});
 
 
 
@@ -624,12 +666,12 @@
            }
         });
 
-        var c=0;
-        var promocode=0;
+        c=0;
+        promocode=0;
         $('.cost').each(function () {
             c = c + parseInt($(this).html());
         });
-        $('#total').html('Your Total:'+'<i class="fa fa-rupee pull-right">&nbsp;&nbsp;&nbsp;'+c+'</i>');
+        $('#total').html('Your Total:'+'<i class="fa fa-rupee pull-right">&nbsp;&nbsp;&nbsp;'+(c+parseInt($('#deliveryamt').val()))+'</i>');
 
         $('.addqty').click(function (eve) {
             $(this).children('.qty').html(parseInt($(this).children('.qty').html())+1);
@@ -638,21 +680,56 @@
             $('.cost').each(function () {
                c = c + parseInt($(this).html());
             });
-            if (promocode>0) $('#total').html('Your Total:'+'<i class="fa fa-rupee pull-right">&nbsp;'+(c-promocode)+'</i><i class="fa pull-right -bold" style="font-size: 25px;">=</i><i class="fa fa-rupee pull-right">&nbsp;'+(promocode)+'</i><i class="fa fa-minus pull-right"></i><i class="fa fa-rupee pull-right">&nbsp;'+c+'</i>');
-            else $('#total').html('Your Total:'+'<i class="fa fa-rupee pull-right">&nbsp;&nbsp;&nbsp;'+c+'</i>');
+
+            if (promocode>0) {
+                $('#total').html('Your Total:'+'<i class="fa fa-rupee pull-right">&nbsp;'+(c-promocode+parseInt($('#deliveryamt').val()))+'</i>');
+                $('.promocodediv').css({"display":"block"});
+                $('.promocdeamt').html(promocode);
+            }
+            else $('#total').html('Your Total:'+'<i class="fa fa-rupee pull-right">&nbsp;'+(c+parseInt($('#deliveryamt').val()))+'</i>');
         });
 
         $('#promocodebtn').click(function () {
-            $.post('/getpromocodedetails',{codename:$('#promocodename').val()},function (data,status) {
+            $.post('/getpromocodedetails',{codename:$('#promocodename').val().toUpperCase()},function (data,status) {
                 if (data.flag == true){
                     $('#promocodeid').val(data.promocdeid);
                     promocode = data.discount;
-                    $('#total').html('Your Total:'+'<i class="fa fa-rupee pull-right">&nbsp;'+(c-promocode)+'</i><i class="fa fa-arrow-right pull-right -bold"></i><i class="fa fa-rupee pull-right">&nbsp;'+(promocode)+'</i><i class="fa fa-minus pull-right"></i><i class="fa fa-rupee pull-right">&nbsp;'+c+'</i>');
+                    $('#total').html('Your Total:'+'<i class="fa fa-rupee pull-right">&nbsp;'+(c-promocode+parseInt($('#deliveryamt').val()))+'</i>');
+                    $('.promocodediv').css({"display":"block"});
+                    $('.promocdeamt').html(promocode);
                 }
             }) ;
         });
 
+        $('#total').change(function () {
+            $('#tcost').val($(this).html());
+        });
+
     });
+
+    function filladdress() {
+        var address = $('#address').val();
+        if (address.split(" ").length<=3){
+            allow=0;
+            alert('Give Your Full Location Address');
+        } else {
+            show(address);
+            allow=1;
+            var lat = $('#lat').val();
+            var lon = $('#lon').val();
+            if (lat.length>0 && lon.length>0){
+                $.post('/getdeliverycharge',{lat:lat,lon:lon,restid:$('#restid').val()},function (data,status) {
+                    if (data.flag == true){
+                        $('.deliverydiv').css({"display":"block"});
+                        $('.deliveryamt').html(data.val);
+                        $('#deliveryamt').val(data.val);
+                        $('#total').html('Your Total:'+'<i class="fa fa-rupee pull-right">&nbsp;'+(c-promocode+parseInt($('#deliveryamt').val()))+'</i>');
+                    }
+                });
+            }
+        }
+
+    }
 </script>
 
 </body>

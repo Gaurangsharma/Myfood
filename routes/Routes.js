@@ -25,10 +25,15 @@ module.exports = function(app){
     router.post('/login', welcomeCtrl.login);
     router.post('/openpayment',customerCtrl.checkout2);
     router.post('/getpromocodedetails',customerCtrl.getpromocodedetails);
+    router.post('/checkout',customerCtrl.checkout2);
+    router.post('/getdeliverycharge',customerCtrl.getdeliverycharge);
+
+
 
     router.get('/restaurant/:rid',adminCtrl.showRestaurant);
     router.get('/items/:iid',adminCtrl.showItems);
     router.get('/checkout',customerCtrl.checkout);
+
 
 
 

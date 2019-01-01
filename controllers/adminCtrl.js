@@ -36,7 +36,7 @@ module.exports = {
     },
     showItems : function *(next) {
         var rid = this.params.iid;
-        var query = 'select t.*,i.*,r.name as rname,r.id as rid from type t,items i,restaurant r where t.itemid=i.id and i.restid=r.id and r.id="%s"';
+        var query = 'select t.*,i.itemname,i.image,r.name as rname,r.id as rid from type t,items i,restaurant r where t.itemid=i.id and i.restid=r.id and r.id="%s"';
         var res = yield databaseUtils.executeQuery(util.format(query, rid));
         console.log(res);
         if (this.currentUser.role == 'customer') {
