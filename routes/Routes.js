@@ -24,6 +24,7 @@ module.exports = function(app){
     router.post('/signup', welcomeCtrl.signUp);
     router.post('/login', welcomeCtrl.login);
     router.post('/openpayment',customerCtrl.checkout2);
+    router.post('/getpromocodedetails',customerCtrl.getpromocodedetails);
 
     router.get('/restaurant/:rid',adminCtrl.showRestaurant);
     router.get('/items/:iid',adminCtrl.showItems);

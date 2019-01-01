@@ -1,4 +1,6 @@
 var sessionUtils = require('../utils/sessionUtils');
+var util = require('util');
+var databaseUtils = require('../utils/databaseUtils');
 
 module.exports = {
     showHomePage: function* (next) {
@@ -28,6 +30,15 @@ module.exports = {
     },
     checkout2:function *(next) {
 
+    },
+    getpromocodedetails: function *(next) {
+        var codename = this.request.body.codename;
+        var res = yield databaseUtils.executeQuery(util.format('select * from promocode where name="%s"',codename));
+        if (res.length==0){
+            this.body = {flag:false}
+        } else {
+            this.body = {flag:true,discount:res[0].discount,promocdeid:res[0].id}
+        }
     }
 
 }

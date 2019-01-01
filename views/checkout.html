@@ -435,12 +435,12 @@
                                     <label>Choose Order Type</label>
                                     <div class="radio">
                                         <label>
-                                            <input type="radio" name="delivery" id="delivery1" value="option1" checked>Home Delivery
+                                            <input type="radio" name="delivery" class="delivery" id="delivery1" value="option1" checked>Home Delivery
                                         </label>
                                     </div>
                                     <div class="radio">
                                         <label>
-                                            <input type="radio" name="delivery" id="delivery2" value="option2">Pickup
+                                            <input type="radio" name="delivery" class="delivery" id="delivery2" value="option2">Pickup
                                         </label>
                                     </div>
                                 </div>
@@ -449,13 +449,13 @@
                                         <input class="form-control" name="phone" placeholder="Enter Phone Here">
                                         <p class="help-block">Will be used to notify at the time of delivery.</p>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group addressgroup">
                                         <label>Address</label>
                                         <input class="form-control" id="address" onblur="filladdress();" name="address" placeholder="Enter Address">
                                         <input type="hidden" name="lat" id="lat">
                                         <input type="hidden" name="lon" id="lon">
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group addressgroup">
                                         <div class="checkbox">
                                             <label>
                                                 <input type="checkbox" onclick="getGeoLocation()" value="">Use Cuurent Location
@@ -516,8 +516,9 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <input type="text" placeholder="PROMOCDE" class="form-control" style="width: 59%;display: inline;">
-                                            <button class="btn btn-default" style="width: 39%;display: inline">REDEEM</button>
+                                            <input type="text" id="promocodename" placeholder="PROMOCODE" class="form-control promocode" style="width: 59%;display: inline;">
+                                            <button type="button" id="promocodebtn" class="btn btn-default promocode" style="width: 39%;display: inline">REDEEM</button>
+                                            <input type="hidden" id="promocodeid" value="undefined">
                                         </div>
                                         <!-- /.list-group -->
                                         <label class="form-control" id="total">
@@ -538,28 +539,6 @@
             </div>
 
         </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -604,8 +583,12 @@
 <script src="/static/dashboard/dist/js/sb-admin-2.js"></script>
 
 <script src="/static/scripts/app.js"></script>
+<script src="/static/scripts/app2.js"></script>
+
 
 <script>
+
+
 
     function filladdress() {
         var address = $('#address').val();
@@ -625,7 +608,7 @@
         function showPosition(position) {
             $('#lat').val(position.coords.latitude);
             $('#lon').val(position.coords.longitude);
-
+            getCode(position.coords.latitude+','+position.coords.longitude+',150');
         }
     }
 
@@ -633,7 +616,16 @@
 
 
 
+        $('.delivery').click(function () {
+           if($('#delivery2').is(':checked')) {
+               $('.addressgroup').css({"display":"none"});
+            }else{
+               $('.addressgroup').css({"display":"block"});
+           }
+        });
+
         var c=0;
+        var promocode=0;
         $('.cost').each(function () {
             c = c + parseInt($(this).html());
         });
@@ -646,8 +638,20 @@
             $('.cost').each(function () {
                c = c + parseInt($(this).html());
             });
-            $('#total').html('Your Total:'+'<i class="fa fa-rupee pull-right">&nbsp;&nbsp;&nbsp;'+c+'</i>');
+            if (promocode>0) $('#total').html('Your Total:'+'<i class="fa fa-rupee pull-right">&nbsp;'+(c-promocode)+'</i><i class="fa pull-right -bold" style="font-size: 25px;">=</i><i class="fa fa-rupee pull-right">&nbsp;'+(promocode)+'</i><i class="fa fa-minus pull-right"></i><i class="fa fa-rupee pull-right">&nbsp;'+c+'</i>');
+            else $('#total').html('Your Total:'+'<i class="fa fa-rupee pull-right">&nbsp;&nbsp;&nbsp;'+c+'</i>');
         });
+
+        $('#promocodebtn').click(function () {
+            $.post('/getpromocodedetails',{codename:$('#promocodename').val()},function (data,status) {
+                if (data.flag == true){
+                    $('#promocodeid').val(data.promocdeid);
+                    promocode = data.discount;
+                    $('#total').html('Your Total:'+'<i class="fa fa-rupee pull-right">&nbsp;'+(c-promocode)+'</i><i class="fa fa-arrow-right pull-right -bold"></i><i class="fa fa-rupee pull-right">&nbsp;'+(promocode)+'</i><i class="fa fa-minus pull-right"></i><i class="fa fa-rupee pull-right">&nbsp;'+c+'</i>');
+                }
+            }) ;
+        });
+
     });
 </script>
 

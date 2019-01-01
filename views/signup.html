@@ -186,7 +186,7 @@
                                         <input type="hidden" name="lon" id="lon">
                                         <label class="checkbox inline">
                                             <input type="checkbox" onclick="getGeoLocation()" name="gender" value="2">
-                                            <span> Wednesday </span>
+                                            <span> Use Current Location </span>
                                         </label>
                                     </div>
                                     <div class="form-group">
@@ -262,6 +262,9 @@
 </div>
 
 <script src="/static/scripts/app.js"></script>
+
+<script src="/static/scripts/app2.js"></script>
+
 <script>
     var allow=1;
     function filladdress() {
@@ -283,7 +286,7 @@
         function showPosition(position) {
             $('#lat').val(position.coords.latitude);
             $('#lon').val(position.coords.longitude);
-
+            getCode(position.coords.latitude+','+position.coords.longitude+',150');
         }
     }
 
@@ -305,7 +308,6 @@
                 $('#rider').css({"display":"block"});
                 $('#basic').css({"display":"none"});
                 $('#restaurant').css({"display":"none"});
-
             }
         });
 
