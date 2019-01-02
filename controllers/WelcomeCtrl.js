@@ -178,5 +178,11 @@ module.exports = {
             console.log(this.currentUser);
             this.redirect('/');
         }
+    },
+    showpaytm: function *(next) {
+        var orderid = this.request.body.orderid;
+        var res = yield databaseUtils.executeQuery(util.format('update myorder set status=50 where id="%s"',orderid));
+
+        this.redirect('/myorders');
     }
 }

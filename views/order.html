@@ -48,7 +48,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="index.html">SB Admin v2.0</a>
+            <a class="navbar-brand" href="index.html"><%= currentUser.user.name %></a>
         </div>
         <!-- /.navbar-header -->
 
@@ -281,24 +281,11 @@
         <div class="navbar-default sidebar" role="navigation">
             <div class="sidebar-nav navbar-collapse">
                 <ul class="nav" id="side-menu">
-                    <li class="sidebar-search">
-                        <div class="input-group custom-search-form">
-                            <input type="text" class="form-control" placeholder="Search/static/dashboard.">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </span>
-                        </div>
-                        <!-- /input-group -->
-                    </li>
+
                     <li>
                         <a href="/dashboard"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                     </li>
 
-                    <li>
-                        <a href="" class="addrider" ><i class="fa fa-plus fa-fw"></i> Rider</a>
-                    </li>
 
 
                 </ul>
@@ -319,12 +306,12 @@
         <div class="row">
             <% for(i in order) { %>
             <div class="col-lg-12 col-md-6">
-                <% if(order[i].status==0 && currentUser.role != 'rider') { %>
+                <% if((order[i].status==0 || order[i].status==50) && currentUser.role != 'rider') { %>
                 <div class="panel panel-red">
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-xs-9">
-                                <div style="font-size: 22px;"><%= '# '+(i+1)  %></div>
+                                <div style="font-size: 22px;"><%= '# '+(parseInt(i)+1)  %></div>
                                 <br/>
                                 <div style="font-size: 16px;">Delivery To: <%= order[i].location  %></div>
                                 <div style="font-size: 16px;">Cost : <%= order[i].amount  %></div>
@@ -335,10 +322,22 @@
                     <a href="#">
                         <div class="panel-footer">
                             <span class="pull-left"></span>
-                            <label class="-bold"> <i class="fa fa-clock-o"></i>
+                            <label class="-bold">
                             <% if(currentUser.role == 'admin') { %>
-                                <%= 'Not Paid Yet ..!!' %>
+                                <% if(order[i].status==50) { %>
+
+
+                                <form method="post" action="/confirmpayment" style="display: inline">
+                                    <i class="fa fa-check" style="font-size: 20px;font-weight: bold;color: green;"></i>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <button type="submit" name="orderid" value="<%= order[i].id %>" class="btn btn-success">Confirm Payment</button>
+                                </form>
                                 <% } else { %>
+                                <i class="fa fa-clock-o"></i>
+                                <%= 'Not Paid Yet ..!!' %>
+                                <% } %>
+                                <% } else { %>
+                                <i class="fa fa-clock-o"></i>
                                 <%= 'Complete Your Order' %>
                                 <% } %>
 
@@ -353,12 +352,14 @@
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-xs-9">
-                                <div style="font-size: 22px;"><%= '# '+(i+1)  %></div>
+                                <div style="font-size: 22px;"><%= '# '+(parseInt(i)+1)  %></div>
                                 <br/>
                                 <div style="font-size: 16px;">Delivery To: <%= order[i].location  %></div>
                                 <div style="font-size: 16px;">Cost : <%= order[i].amount  %></div>
-                                <div style="font-size: 16px;">Date : <%= order[i].ts.toString().substring(0,25) %></div>.                                <% if(order[i].paymentmode==3) { %>
-                                <div style="font-size: 16px;color: red;background-color: whitesmoke;width: 30%;font-weight: bold;">Status : ** Cash On Delivery **</div>
+                                <div style="font-size: 16px;">Date : <%= order[i].ts.toString().substring(0,25) %></div>
+                                <div style="font-size: 16px;">OTP : <%= order[i].code %></div>
+                                <% if(order[i].paymentmode==3) { %>
+                                <div style="font-size: 16px;color: red;background-color: whitesmoke;width: 40%;font-weight: bold;">Status : ** Cash On Delivery **</div>
                                 <% } else { %>
                                 <div style="font-size: 16px;color: green;background-color: whitesmoke;width: 20%;font-weight: bold; ">Status: ** Paid **</div>
                                 <% } %>
@@ -401,11 +402,12 @@
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-xs-9">
-                                <div style="font-size: 22px;"><%= '# '+(i+1)  %></div>
+                                <div style="font-size: 22px;"><%= '# '+(parseInt(i)+1)  %></div>
                                 <br/>
                                 <div style="font-size: 16px;">Delivery To: <%= order[i].location  %></div>
                                 <div style="font-size: 16px;">Cost : <%= order[i].amount  %></div>
                                 <div style="font-size: 16px;">Date : <%= order[i].ts.toString().substring(0,25) %></div>
+                                <div style="font-size: 16px;">OTP : <%= order[i].code %></div>
                                 <% if(order[i].paymentmode==3) { %>
                                 <div style="font-size: 16px;color: red;background-color: whitesmoke;width: 30%;font-weight: bold;">Status : ** Cash On Delivery **</div>
                                 <% } else { %>
@@ -448,11 +450,12 @@
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-xs-9">
-                                <div style="font-size: 22px;"><%= '# '+(i+1)  %></div>
+                                <div style="font-size: 22px;"><%= '# '+(parseInt(i)+1)  %></div>
                                 <br/>
                                 <div style="font-size: 16px;">Delivery To: <%= order[i].location  %></div>
                                 <div style="font-size: 16px;">Cost : <%= order[i].amount  %></div>
                                 <div style="font-size: 16px;">Date : <%= order[i].ts.toString().substring(0,25) %></div>
+                                <div style="font-size: 16px;">OTP : <%= order[i].code %></div>
                                 <% if(order[i].paymentmode==3) { %>
                                 <div style="font-size: 16px;color: red;background-color: whitesmoke;width: 30%;font-weight: bold;">Status : ** Cash On Delivery **</div>
                                 <% } else { %>
@@ -494,11 +497,12 @@
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-xs-9">
-                                <div style="font-size: 22px;"><%= '# '+(i+1)  %></div>
+                                <div style="font-size: 22px;"><%= '# '+(parseInt(i)+1)  %></div>
                                 <br/>
                                 <div style="font-size: 16px;">Delivery To: <%= order[i].location  %></div>
                                 <div style="font-size: 16px;">Cost : <%= order[i].amount  %></div>
                                 <div style="font-size: 16px;">Date : <%= order[i].ts.toString().substring(0,25) %></div>
+                                <div style="font-size: 16px;">OTP : <%= order[i].code %></div>
                                 <% if(order[i].paymentmode==3) { %>
                                 <div style="font-size: 16px;color: red;background-color: whitesmoke;width: 30%;font-weight: bold;">Status : ** Cash On Delivery **</div>
                                 <% } else { %>

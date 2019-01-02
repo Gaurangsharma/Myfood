@@ -687,6 +687,7 @@ var promocode;
             c = c + parseInt($(this).html());
         });
         $('#total').html('Your Total:'+'<i class="fa fa-rupee pull-right">&nbsp;&nbsp;&nbsp;'+(c+parseInt($('#deliveryamt').val()))+'</i>');
+        $('#tcost').val((c+parseInt($('#deliveryamt').val())));
 
         $('.addqty').click(function (eve) {
             $(this).children('.qty').html(parseInt($(this).children('.qty').html())+1);
@@ -698,10 +699,14 @@ var promocode;
 
             if (promocode>0) {
                 $('#total').html('Your Total:'+'<i class="fa fa-rupee pull-right">&nbsp;'+(c-promocode+parseInt($('#deliveryamt').val()))+'</i>');
+                $('#tcost').val((c-promocode+parseInt($('#deliveryamt').val())));
                 $('.promocodediv').css({"display":"block"});
                 $('.promocdeamt').html(promocode);
             }
-            else $('#total').html('Your Total:'+'<i class="fa fa-rupee pull-right">&nbsp;'+(c+parseInt($('#deliveryamt').val()))+'</i>');
+            else {
+                $('#total').html('Your Total:' + '<i class="fa fa-rupee pull-right">&nbsp;' + (c + parseInt($('#deliveryamt').val())) + '</i>');
+                $('#tcost').val((c + parseInt($('#deliveryamt').val())));
+            }
         });
 
         $('#promocodebtn').click(function () {
@@ -710,14 +715,11 @@ var promocode;
                     $('#promocodeid').val(data.promocdeid);
                     promocode = data.discount;
                     $('#total').html('Your Total:'+'<i class="fa fa-rupee pull-right">&nbsp;'+(c-promocode+parseInt($('#deliveryamt').val()))+'</i>');
+                    $('#tcost').val((c-promocode+parseInt($('#deliveryamt').val())));
                     $('.promocodediv').css({"display":"block"});
                     $('.promocdeamt').html(promocode);
                 }
             }) ;
-        });
-
-        $('#total').change(function () {
-            $('#tcost').val($(this).html());
         });
 
     });
@@ -738,6 +740,7 @@ var promocode;
                         $('.deliverydiv').css({"display":"block"});
                         $('.deliveryamt').html(data.val);
                         $('#deliveryamt').val(data.val);
+                        $('#tcost').val((c-promocode+parseInt($('#deliveryamt').val())));
                         $('#total').html('Your Total:'+'<i class="fa fa-rupee pull-right">&nbsp;'+(c-promocode+parseInt($('#deliveryamt').val()))+'</i>');
                     }
                 });

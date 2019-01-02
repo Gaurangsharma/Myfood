@@ -69,5 +69,10 @@ module.exports = {
         var res = yield databaseUtils.executeQuery(util.format('update myorder m,otp o set m.status=4 where m.otpid=o.id and o.code="%s"',otp));
         console.log(otp,res);
         this.redirect('/myorders');
+    },
+    confirmpayment:function *(next) {
+        var orderid = this.request.body.orderid;
+        var res = yield databaseUtils.executeQuery(util.format('update myorder set status=1 where id="%s"',orderid));
+        this.redirect('/myorders');
     }
 }
