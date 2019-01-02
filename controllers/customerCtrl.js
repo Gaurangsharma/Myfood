@@ -45,9 +45,14 @@ module.exports = {
         var promocodeid = this.request.body.promocodeid;
         var tcost = this.request.body.tcost;
         var restid = this.request.body.restid;
-
+        var status=0;
+        if (payment==3) status=1;
+        if (payment == 3 && delivery == 2){
+            this.redirect('/dashboard');
+        }
+        
         var order = yield databaseUtils.executeQuery(util.format('insert into myorder(customerid,restid,location,promocodeid,deliverytype,status,amount,paymentmode,lat,lon,dcharge,otpid) values("%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s")\
-        ',cid,restid,address,promocodeid,delivery,0,tcost,payment,lat,lon,dcost,1));
+        ',cid,restid,address,promocodeid,delivery,status,tcost,payment,lat,lon,dcost,1));
 
         var orderid = order.insertId;
         for(var i=0;i<numberofitems;++i){
@@ -56,8 +61,7 @@ module.exports = {
             var res = yield databaseUtils.executeQuery(util.format('insert into ordermetadata(orderid,itemid,cost,qty) \ ' +
                 ' select "%s",t.id,t.price*"%s","%s" from type t where t.id="%s"',orderid,qty,qty,itemid));
         }
-
-        this.redirect('/dashboard');
+        this.redirect('/myorders');
 
     },
     getpromocodedetails: function *(next) {
