@@ -1,9 +1,7 @@
-/node_modules
 .project
 .buildpath
 .settings/*
 tmp/*
-node_modules/*
 .editorconfig
 *.swp
 .DS_Store
@@ -14,5 +12,4 @@ logs/*
 dump.rdb
 static/static/documents/*
 nohup.out
-static/static/uploads/*
 data.txt

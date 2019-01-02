@@ -42,5 +42,19 @@ module.exports = {
         }
 
         this.redirect('/dashboard');
+    },
+    addrider:function *(next) {
+        var ridername = this.request.body.fields.ridername;
+        var riderpic = this.request.body.files.riderpic.path.split('\\')[3];
+        var adhaar = this.request.body.fields.adhaar;
+        var phone = this.request.body.fields.phone;
+        var pwd = this.request.body.fields.pwd;
+        var res = yield databaseUtils.executeQuery(util.format('insert into rider(name,pwd,phone,adhaar,pic) \
+        values("%s","%s","%s","%s","%s")',ridername,pwd,phone,adhaar,riderpic));
+        this.redirect('/dashboard');
+    },
+    getriders:function *(next) {
+        var res  = yield databaseUtils.executeQuery(util.format('select * from rider'));
+        this.body=res;
     }
 }

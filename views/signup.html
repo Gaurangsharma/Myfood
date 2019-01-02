@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.0/mapsjs-ui.css" />
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-core.js"></script>
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-service.js"></script>
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-ui.js"></script>
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>
+
+
+    <style>
+        .register{
+            background: -webkit-linear-gradient(left, #3931af, #00c6ff);
+            margin-top: 3%;
+            padding: 3%;
+        }
+        .register-left{
+            text-align: center;
+            color: #fff;
+            margin-top: 4%;
+        }
+        .register-left input{
+            border: none;
+            border-radius: 1.5rem;
+            padding: 2%;
+            width: 60%;
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #383d41;
+            margin-top: 30%;
+            margin-bottom: 3%;
+            cursor: pointer;
+        }
+        .register-right{
+            background: #f8f9fa;
+            border-top-left-radius: 10% 50%;
+            border-bottom-left-radius: 10% 50%;
+        }
+        .register-left img{
+            margin-top: 15%;
+            margin-bottom: 5%;
+            width: 25%;
+            -webkit-animation: mover 2s infinite  alternate;
+            animation: mover 1s infinite  alternate;
+        }
+        @-webkit-keyframes mover {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-20px); }
+        }
+        @keyframes mover {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-20px); }
+        }
+        .register-left p{
+            font-weight: lighter;
+            padding: 12%;
+            margin-top: -9%;
+        }
+        .register .register-form{
+            padding: 10%;
+            margin-top: 10%;
+        }
+        .btnRegister{
+            float: right;
+            margin-top: 10%;
+            border: none;
+            border-radius: 1.5rem;
+            padding: 2%;
+            background: #0062cc;
+            color: #fff;
+            font-weight: 600;
+            width: 50%;
+            cursor: pointer;
+        }
+        .register .nav-tabs{
+            margin-top: 3%;
+            border: none;
+            background: #0062cc;
+            border-radius: 1.5rem;
+            width: 28%;
+            float: right;
+        }
+        .register .nav-tabs .nav-link{
+            padding: 2%;
+            height: 34px;
+            font-weight: 600;
+            color: #fff;
+            border-top-right-radius: 1.5rem;
+            border-bottom-right-radius: 1.5rem;
+        }
+        .register .nav-tabs .nav-link:hover{
+            border: none;
+        }
+        .register .nav-tabs .nav-link.active{
+            width: 100px;
+            color: #0062cc;
+            border: 2px solid #0062cc;
+            border-top-left-radius: 1.5rem;
+            border-bottom-left-radius: 1.5rem;
+        }
+        .register-heading{
+            text-align: center;
+            margin-top: 8%;
+            margin-bottom: -15%;
+            color: #495057;
+        }
+    </style>
+    <head>
+
+<body>
+
+<div class="container register">
+    <div class="row">
+        <div class="col-md-3 register-left">
+        </div>
+        <div class="col-md-9 register-right">
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <h3 class="register-heading">Signup</h3>
+                    <div class="row register-form">
+                        <% try{ if(msg) { %>
+                        <h4><%= msg %></h4>
+                        <% } }catch(e){} %>
+                        <form class="form-control" id="myform" method="post" action="/signup" enctype="multipart/form-data">
+                            <div class="col-md-6">
+
+                                <div class="form-group">
+                                    <select class="form-control" id="registertypeselect" name="type">
+                                        <option value="0">Admin</option>
+                                        <option value="1">Customer</option>
+                                        <option value="2">Restaurant</option>
+                                        <option value="3">Rider</option>
+
+                                    </select>
+                                </div>
+
+                                <div id="basic">
+                                    <div class="form-group">
+                                        <input type="text" name="name" class="form-control" placeholder="Name" value="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="email" name="email" class="form-control" placeholder="example: example@site.com" value="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="password" name="pwd" class="form-control" placeholder="Password" value="" />
+                                    </div>
+                                </div>
+
+                                <div id="rider" style="display: none;">
+                                    <div class="form-group">
+                                        <input type="text" name="name" class="form-control" placeholder="Name" value="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="password" name="pwd" class="form-control" placeholder="Password" value="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" pattern="^[\d]*$" name="adhaar" class="form-control" placeholder="Adhaar Card No." value="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" pattern="^[\d]*$" name="phone" class="form-control" placeholder="Phone" value="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="file" name="pic" class="form-control" />
+                                    </div>
+
+                                </div>
+
+                                <div id="restaurant" style="display: none;">
+                                    <div class="form-group">
+                                        <input type="text" name="name" class="form-control" placeholder="Name" value="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="email" name="email" class="form-control" placeholder="example: example@site.com" value="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" onblur="filladdress();" id="address" name="address" class="form-control" placeholder="Enter Full Address" value="" />
+                                        <input type="hidden" name="lat" id="lat">
+                                        <input type="hidden" name="lon" id="lon">
+                                        <label class="checkbox inline">
+                                            <input type="checkbox" onclick="getGeoLocation()" name="gender" value="2">
+                                            <span> Use Current Location </span>
+                                        </label>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="file" name="pic" class="form-control"  />
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" pattern="^[\d]*$" name="phone" class="form-control" placeholder="Phone" value="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-control">
+                                            <span> Opening Time </span>
+                                            <input type="time" name="openingtime" class="form-control" placeholder="Opening Time" value="" />
+                                        </label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-control">
+                                            <span> Closing Time </span>
+                                            <input type="time" name="closingtime" class="form-control" placeholder="Closing Time" value="" />
+                                        </label>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" name="license" class="form-control" placeholder="License Number" value="" />
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="maxl">
+                                            <label class="checkbox inline">
+                                                <input type="checkbox" class="openingdays" name="gender" value="0">
+                                                <span> Monday </span>
+                                            </label>
+                                            <label class="checkbox inline">
+                                                <input type="checkbox" class="openingdays" name="gender" value="1">
+                                                <span> Tuesday </span>
+                                            </label>
+                                            <label class="checkbox inline">
+                                                <input type="checkbox" class="openingdays" name="gender" value="2">
+                                                <span> Wednesday </span>
+                                            </label>
+                                            <label class="checkbox inline">
+                                                <input type="checkbox" class="openingdays" name="gender" value="3">
+                                                <span> Thursday </span>
+                                            </label>
+                                            <label class="checkbox inline">
+                                                <input type="checkbox" class="openingdays" name="gender" value="4">
+                                                <span> Friday </span>
+                                            </label>
+                                            <label class="checkbox inline">
+                                                <input type="checkbox" class="openingdays" name="gender" value="5">
+                                                <span> Saturday </span>
+                                            </label>
+                                            <label class="checkbox inline">
+                                                <input type="checkbox" class="openingdays" name="gender" value="6">
+                                                <span> Sunday </span>
+                                            </label>
+                                            <input type="hidden" name="openingday" id="openingday" value="0">
+
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="form-control btn btn-outline-primary" >Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="/static/scripts/app.js"></script>
+
+<script src="/static/scripts/app2.js"></script>
+
+<script>
+    var allow=1;
+    function filladdress() {
+        var address = $('#address').val();
+        if (address.split(" ").length<=3){
+            allow=0;
+            alert('Give Full Location Of Your Restaurant');
+        } else {
+            show(address);
+            allow=1;
+        }
+    }
+
+    function getGeoLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        }
+
+        function showPosition(position) {
+            $('#lat').val(position.coords.latitude);
+            $('#lon').val(position.coords.longitude);
+            getCode(position.coords.latitude+','+position.coords.longitude+',150');
+        }
+    }
+
+    $(document).ready(function () {
+        $('#myform').submit(function (event) {
+           if (allow==0) event.preventDefault();
+        });
+        $('#registertypeselect').change(function (event) {
+            if (this.value==0 || this.value==1){
+                $('#basic').css({"display":"block"});
+                $('#rider').css({"display":"none"});
+                $('#restaurant').css({"display":"none"});
+
+            }else if (this.value==2){
+                $('#basic').css({"display":"block"});
+                $('#restaurant').css({"display":"block"});
+                $('#rider').css({"display":"none"});
+            } else {
+                $('#rider').css({"display":"block"});
+                $('#basic').css({"display":"none"});
+                $('#restaurant').css({"display":"none"});
+            }
+        });
+
+        $('.openingdays').change(function (event) {
+            var v = event.target.value;
+            var new_value = $('#openingday').val()
+            new_value = new_value ^ (1<<v);
+            $('#openingday').val(new_value);
+        });
+
+    });
+</script>
+</body>
+</html>
