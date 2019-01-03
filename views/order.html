@@ -305,15 +305,22 @@
         <!-- /.row -->
         <div class="row">
             <% for(i in order) { %>
-            <div class="col-lg-12 col-md-6">
+
                 <% if((order[i].status==0 || order[i].status==50) && currentUser.role != 'rider') { %>
+            <div class="col-lg-12 col-md-6">
                 <div class="panel panel-red">
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-xs-9">
                                 <div style="font-size: 22px;"><%= '# '+(parseInt(i)+1)  %></div>
                                 <br/>
+
+                                <% if(order[i].deliverytype==1){ %>
                                 <div style="font-size: 16px;">Delivery To: <%= order[i].location  %></div>
+                                <% } else { %>
+                                <div style="font-size: 16px;">Pickup</div>
+                                <% } %>
+
                                 <div style="font-size: 16px;">Cost : <%= order[i].amount  %></div>
                                 <div style="font-size: 16px;">Date : <%= order[i].ts.toString().substring(0,25) %></div>
                             </div>
@@ -327,7 +334,7 @@
                                 <% if(order[i].status==50) { %>
 
 
-                                <form method="post" action="/confirmpayment" style="display: inline">
+                                <form method="post" action="/confirmpayment">
                                     <i class="fa fa-check" style="font-size: 20px;font-weight: bold;color: green;"></i>
                                     &nbsp;&nbsp;&nbsp;&nbsp;
                                     <button type="submit" name="orderid" value="<%= order[i].id %>" class="btn btn-success">Confirm Payment</button>
@@ -338,26 +345,32 @@
                                 <% } %>
                                 <% } else { %>
                                 <i class="fa fa-clock-o"></i>
-                                <%= 'Complete Your Order' %>
+                                Order Not Completed
                                 <% } %>
-
-
                             </label>
                             <div class="clearfix"></div>
                         </div>
                     </a>
                 </div>
+            </div>
                 <% } else if(order[i].status==1 && currentUser.role != 'rider') { %>
+                <div class="col-lg-12 col-md-6">
                 <div class="panel panel-yellow">
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-xs-9">
                                 <div style="font-size: 22px;"><%= '# '+(parseInt(i)+1)  %></div>
                                 <br/>
+                                <% if(order[i].deliverytype==1){ %>
                                 <div style="font-size: 16px;">Delivery To: <%= order[i].location  %></div>
+                                <% } else { %>
+                                <div style="font-size: 16px;">Pickup</div>
+                                <% } %>
                                 <div style="font-size: 16px;">Cost : <%= order[i].amount  %></div>
                                 <div style="font-size: 16px;">Date : <%= order[i].ts.toString().substring(0,25) %></div>
+                                <% if(currentUser.role =='admin' || currentUser.role == 'customer') { %>
                                 <div style="font-size: 16px;">OTP : <%= order[i].code %></div>
+                                <% } %>
                                 <% if(order[i].paymentmode==3) { %>
                                 <div style="font-size: 16px;color: red;background-color: whitesmoke;width: 40%;font-weight: bold;">Status : ** Cash On Delivery **</div>
                                 <% } else { %>
@@ -366,24 +379,29 @@
                             </div>
                         </div>
                     </div>
-                    <div>
                         <div class="panel-footer">
                             <span class="pull-left"></span>
                             <label class="-bold col-6" style="display: inline;width:20%;color: #f0ad4e"> <i class="fa fa-clock-o"></i>
                             <% if(currentUser.role == 'admin' ) { %>
+                                <% if(order[i].deliverytype==1){ %>
                                 Choose Rider
+                                <% } %>
                             </label>
                             &nbsp;&nbsp;&nbsp;&nbsp;
                             <form method="post" style="display: inline" action="/setrider">
                                 <input type="hidden" name="oid" value="<%= order[i].id %>">
+
+                                <% if(order[i].deliverytype==1){ %>
                                 <select class="form-control col-6" name="rid" style="display: inline;width: 35%;">
                                     <% for(j in rider) { %>
                                     <option value="<%= rider[j].id %>"><%= rider[j].name %></option>
                                     <% } %>
                                 </select>
-
-                            &nbsp;&nbsp;&nbsp;&nbsp;
-                            <button type="submit" class="btn btn-warning">Assign</button>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <button type="submit" class="btn btn-warning">Assign</button>
+                                    <% } else { %>
+                                <button type="submit" class="btn btn-warning">Proceed</button>
+                                <% } %>
                             </form>
                                 <% } else { %>
                                 Order Under Processing...
@@ -397,17 +415,26 @@
                         </div>
                     </a>
                 </div>
+                </div>
                 <% } else if((order[i].status==2) && (currentUser.role !='rider' || order[i].rid==currentUser.user.id)) { %>
+                    <div class="col-lg-12 col-md-6">
                 <div class="panel panel-yellow">
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-xs-9">
                                 <div style="font-size: 22px;"><%= '# '+(parseInt(i)+1)  %></div>
                                 <br/>
+                                <% if(order[i].deliverytype==1){ %>
                                 <div style="font-size: 16px;">Delivery To: <%= order[i].location  %></div>
+                                <% } else { %>
+                                <div style="font-size: 16px;">Pickup</div>
+                                <% } %>
                                 <div style="font-size: 16px;">Cost : <%= order[i].amount  %></div>
                                 <div style="font-size: 16px;">Date : <%= order[i].ts.toString().substring(0,25) %></div>
+                                <% if(currentUser.role =='admin' || currentUser.role == 'customer') { %>
                                 <div style="font-size: 16px;">OTP : <%= order[i].code %></div>
+                                <% } %>
+
                                 <% if(order[i].paymentmode==3) { %>
                                 <div style="font-size: 16px;color: red;background-color: whitesmoke;width: 30%;font-weight: bold;">Status : ** Cash On Delivery **</div>
                                 <% } else { %>
@@ -427,10 +454,14 @@
                             <label class="-bold">
                                 <% if(currentUser.role == 'admin' ) { %>
                                 <i class="fa fa-clock-o"></i>
+                                <% if(order[i].deliverytype==1){ %>
                                 Rider: &nbsp;&nbsp;<%= order[i].rname %>
+                                <% } else { %>
+                                Waiting...!!!
+                                <% } %>
                             </label>
 
-                            <% } else if(currentUser.role != 'rider' ) { %>
+                            <% } else if((currentUser.role != 'rider' && order[i].deliverytype==1) || (currentUser.role != 'rider' && currentUser.role != 'restaurant' && order[i].deliverytype==2)) { %>
                             <i class="fa fa-clock-o"></i>
                             Order Under Processing...
                             </label>
@@ -438,24 +469,34 @@
                             </label>
                             <form action="/takeorder" method="post">
                                 <input type="hidden" name="oid" value="<%= order[i].id %>">
-                            <button type="submit" class="btn btn-success">Accept</button>
+                            <button type="submit" class="btn btn-success">Take</button>
                             </form>
                             <% } %>
                             <div class="clearfix"></div>
                         </div>
                     </a>
                 </div>
+                    </div>
                 <% } else if(order[i].status==3) { %>
+                        <div class="col-lg-12 col-md-6">
                 <div class="panel panel-primary">
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-xs-9">
                                 <div style="font-size: 22px;"><%= '# '+(parseInt(i)+1)  %></div>
                                 <br/>
+                                <% if(order[i].deliverytype==1){ %>
                                 <div style="font-size: 16px;">Delivery To: <%= order[i].location  %></div>
+                                <% } else { %>
+                                <div style="font-size: 16px;">Pickup</div>
+                                <% } %>
                                 <div style="font-size: 16px;">Cost : <%= order[i].amount  %></div>
                                 <div style="font-size: 16px;">Date : <%= order[i].ts.toString().substring(0,25) %></div>
+
+                                <% if(currentUser.role =='admin' || currentUser.role == 'customer') { %>
                                 <div style="font-size: 16px;">OTP : <%= order[i].code %></div>
+                                <% } %>
+
                                 <% if(order[i].paymentmode==3) { %>
                                 <div style="font-size: 16px;color: red;background-color: whitesmoke;width: 30%;font-weight: bold;">Status : ** Cash On Delivery **</div>
                                 <% } else { %>
@@ -464,21 +505,35 @@
                             </div>
                         </div>
                     </div>
-                    <div>
+
                         <div class="panel-footer">
                             <span class="pull-left"></span>
-                            <label class="-bold" style="color:#337ab7 "> <i class="fa fa-clock-o"></i>
+                            <label class="-bold" style="color:#337ab7 ">
                             <% if(currentUser.role == 'admin' ) { %>
+                                <% if(order[i].deliverytype==1) { %>
                             Rider: &nbsp;&nbsp;<%= order[i].rname %>
                                 &nbsp;&nbsp;
                                 ( <%= order[i].rphone %> )
+                                <% }  else {%>
+                                <i class="fa fa-check" style="color: green"></i> &nbsp;&nbsp; Accepted By Restaurant
+                                <% } %>
                             </label>
 
-                            <% } else if(currentUser.role != 'rider') { %>
-                            Order is On Its WAY .. !!
+                            <% } else if((currentUser.role != 'rider' && order[i].deliverytype==1) || (currentUser.role != 'rider' && currentUser.role != 'restaurant' && order[i].deliverytype==2)) { %>
+                            <i class="fa fa-clock-o"></i>
+
+
+
+                            <% if(order[i].deliverytype==1) { %>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            Order is On Its WAY .. !!
                             Call
                             <%= order[i].rphone %> To Track
+                            <% } else { %>
+                            &nbsp;&nbsp;
+                            Order is Ready ..!!
+                            <% } %>
+
                             </label>
                             <% } else { %>
                             Enter OTP: &nbsp;
@@ -492,14 +547,20 @@
                         </div>
                     </a>
                 </div>
+                </div>
                 <% } else if(order[i].status==4) { %>
+                    <div class="col-lg-12 col-md-6">
                 <div class="panel panel-green">
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-xs-9">
                                 <div style="font-size: 22px;"><%= '# '+(parseInt(i)+1)  %></div>
                                 <br/>
+                                <% if(order[i].deliverytype==1){ %>
                                 <div style="font-size: 16px;">Delivery To: <%= order[i].location  %></div>
+                                <% } else { %>
+                                <div style="font-size: 16px;">Pickup</div>
+                                <% } %>
                                 <div style="font-size: 16px;">Cost : <%= order[i].amount  %></div>
                                 <div style="font-size: 16px;">Date : <%= order[i].ts.toString().substring(0,25) %></div>
                                 <div style="font-size: 16px;">OTP : <%= order[i].code %></div>
@@ -517,7 +578,7 @@
                             <label class="-bold"> <i class="fa fa-clock-o"></i>
 
 
-                            <% if(currentUser.role == 'admin' ) { %>
+                            <% if(currentUser.role == 'admin' && order[i].deliverytype==1) { %>
                             Delivered By : &nbsp;&nbsp;<%= order[i].rname %>
                             &nbsp;&nbsp;
                             ( <%= order[i].rphone %> )
@@ -532,8 +593,9 @@
                         </div>
                     </a>
                 </div>
+                    </div>
                 <% } %>
-            </div>
+
             <% } %>
 
         </div>

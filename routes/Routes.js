@@ -33,6 +33,7 @@ module.exports = function(app){
     router.post('/deliver',adminCtrl.deliver);
     router.post('/paytm',welcomeCtrl.showpaytm);
     router.post('/confirmpayment',adminCtrl.confirmpayment);
+    router.post('/deleteorder',adminCtrl.deleteorder);
 
 
 

@@ -46,13 +46,13 @@
                         <fieldset>
                             <div class="form-group">
                                 <label class="form-control" > <i class="fa fa-rupee"></i> <%= amount %></label>
-                                <input type="hidden" name="orderid" value="<%= orderid %>">
+                                <input type="hidden" id="orderid" name="orderid" value="<%= orderid %>">
                             </div>
                             <div class="form-group">
                                 <img src="/static/uploads/upload_1bb0972f1195d8b861bb188107c3fad6" alt="9012747590">
                             </div>
                             <!-- Change this to a button or input when using this as a form -->
-                            <button type="submit" class="btn btn-lg btn-success btn-block">Confirm</button>
+                            <button type="submit" id="del" class="btn btn-lg btn-success btn-block">Confirm</button>
                         </fieldset>
                     </form>
                 </div>
@@ -72,6 +72,27 @@
 
 <!-- Custom Theme JavaScript -->
 <script src="/static/dashboard/dist/js/sb-admin-2.js"></script>
+
+<script>
+    $(document).ready(function () {
+         // $(document).unload(function () {
+         //     $.post('/deleteorder',{orderid:$('#orderid')},function () {
+         //     });
+         // });
+        // window.onhashchange = function(){
+        //     $.post('/deleteorder',{orderid:$('#orderid')},function () {
+        //     });
+        // }
+        $(window).on('popstate',function () {
+                $.post('/deleteorder',{orderid:$('#orderid')},function () {
+                });
+        });
+        $('#del').click(function () {
+            // $(document).off('unload');
+            window.removeEventListener('popstate');
+        })
+    });
+</script>
 
 </body>
 

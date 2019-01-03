@@ -132,7 +132,7 @@ module.exports = {
                 rider:rider,
             });
         } else if (this.currentUser.role == 'customer') {
-            var res = yield databaseUtils.executeQuery(util.format('select m.*,o.code from myorder m left join otp o on m.otpid=o.id where customerid="%s" order by status', this.currentUser.user.id));
+            var res = yield databaseUtils.executeQuery(util.format('select m.*,o.code,rider.phone as rphone from myorder m left join otp o on m.otpid=o.id left join riderorder on m.id=riderorder.orderid left join rider on riderorder.riderid=rider.id where customerid="%s" order by status', this.currentUser.user.id));
             yield this.render('order', {
                 order: res,
             });
