@@ -176,6 +176,7 @@ function addLocationsToPanel(locations){
  * @param {Object[]} locations An array of locations as received from the
  *                             H.service.GeocodingService
  */
+
 // function addLocationsToMap(locations){
 //   var group = new  H.map.Group(),
 //     position,

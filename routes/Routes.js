@@ -31,12 +31,17 @@ module.exports = function(app){
     router.post('/setrider',adminCtrl.setrider);
     router.post('/takeorder',adminCtrl.takeorder);
     router.post('/deliver',adminCtrl.deliver);
+    router.post('/paytm',welcomeCtrl.showpaytm);
+    router.post('/confirmpayment',adminCtrl.confirmpayment);
+    router.post('/deleteorder',adminCtrl.deleteorder);
 
 
 
     router.get('/restaurant/:rid',adminCtrl.showRestaurant);
     router.get('/items/:iid',adminCtrl.showItems);
     router.get('/checkout',customerCtrl.checkout);
+
+
 
 
 

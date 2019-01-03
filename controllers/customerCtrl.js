@@ -2,6 +2,7 @@ var sessionUtils = require('../utils/sessionUtils');
 var util = require('util');
 var databaseUtils = require('../utils/databaseUtils');
 var Distance = require('geo-distance');
+var rn = require('random-number');
 
 module.exports = {
     showHomePage: function* (next) {
@@ -45,9 +46,29 @@ module.exports = {
         var promocodeid = this.request.body.promocodeid;
         var tcost = this.request.body.tcost;
         var restid = this.request.body.restid;
+        var otpid;
+        var status=0;
+        if (payment==3) status=1;
+        if (payment == 3 && delivery == 2){
+            this.redirect('/dashboard');
+        }
+        if (payment==3){
+            options = {
+                min:100000,
+                max:999999,
+                integer:true
+            }
+            var newotp = rn(options);
+
+            var res = yield databaseUtils.executeQuery(util.format('insert into otp(code) values("%s")',newotp));
+            otpid = res.insertId;
+        } else {
+            otpid=1;
+        }
+
 
         var order = yield databaseUtils.executeQuery(util.format('insert into myorder(customerid,restid,location,promocodeid,deliverytype,status,amount,paymentmode,lat,lon,dcharge,otpid) values("%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s")\
-        ',cid,restid,address,promocodeid,delivery,0,tcost,payment,lat,lon,dcost,1));
+        ',cid,restid,address,promocodeid,delivery,status,tcost,payment,lat,lon,dcost,otpid));
 
         var orderid = order.insertId;
         for(var i=0;i<numberofitems;++i){
@@ -56,8 +77,14 @@ module.exports = {
             var res = yield databaseUtils.executeQuery(util.format('insert into ordermetadata(orderid,itemid,cost,qty) \ ' +
                 ' select "%s",t.id,t.price*"%s","%s" from type t where t.id="%s"',orderid,qty,qty,itemid));
         }
-
-        this.redirect('/dashboard');
+        if (payment==3){
+            this.redirect('/myorders');
+        } else {
+            yield this.render('paytm',{
+                orderid:orderid,
+                amount:tcost
+            });
+        }
 
     },
     getpromocodedetails: function *(next) {
@@ -96,7 +123,7 @@ module.exports = {
     },
     showOrderPage : function *(next) {
         if (this.currentUser.role == 'admin' || this.currentUser.role == 'rider'){
-            var res = yield databaseUtils.executeQuery(util.format('select myorder.*,rider.name as rname,rider.phone as rphone,rider.id as rid from myorder left join riderorder on myorder.id=riderorder.orderid left join rider on riderorder.riderid=rider.id order by myorder.status'));
+            var res = yield databaseUtils.executeQuery(util.format('select myorder.*,rider.name as rname,rider.phone as rphone,rider.id as rid,code from myorder left join riderorder on myorder.id=riderorder.orderid left join rider on riderorder.riderid=rider.id left join otp on myorder.otpid=otp.id order by myorder.status'));
             console.log(res);
             var rider = yield databaseUtils.executeQuery(util.format('select * from rider'));
 
@@ -104,8 +131,13 @@ module.exports = {
                 order: res,
                 rider:rider,
             });
-        } else {
-            var res = yield databaseUtils.executeQuery(util.format('select * from myorder where customerid="%s" order by status', this.currentUser.user.id));
+        } else if (this.currentUser.role == 'customer') {
+            var res = yield databaseUtils.executeQuery(util.format('select m.*,o.code,rider.phone as rphone from myorder m left join otp o on m.otpid=o.id left join riderorder on m.id=riderorder.orderid left join rider on riderorder.riderid=rider.id where customerid="%s" order by status', this.currentUser.user.id));
+            yield this.render('order', {
+                order: res,
+            });
+        } else{
+            var res = yield databaseUtils.executeQuery(util.format('select * from myorder where restid="%s" order by status', this.currentUser.rest.id));
             yield this.render('order', {
                 order: res,
             });
