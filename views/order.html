@@ -477,7 +477,7 @@
                     </a>
                 </div>
                     </div>
-                <% } else if(order[i].status==3) { %>
+                <% } else if(order[i].status==3) { if (currentUser.role!='rider' || (currentUser.user.id==order[i].rid)) { %>
                         <div class="col-lg-12 col-md-6">
                 <div class="panel panel-primary">
                     <div class="panel-heading">
@@ -548,7 +548,7 @@
                     </a>
                 </div>
                 </div>
-                <% } else if(order[i].status==4) { %>
+                <% }} else if(order[i].status==4) { if (currentUser.role!='rider' || (currentUser.user.id==order[i].rid)) { %>
                     <div class="col-lg-12 col-md-6">
                 <div class="panel panel-green">
                     <div class="panel-heading">
@@ -594,7 +594,7 @@
                     </a>
                 </div>
                     </div>
-                <% } %>
+                <% }} %>
 
             <% } %>
 
